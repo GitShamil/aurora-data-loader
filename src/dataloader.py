@@ -72,6 +72,9 @@ def collate_batches(batches: List[Batch]) -> Batch:
     )
 
 def create_dataloader(
+    atmos_vars: List[str] = None,
+    surface_vars: List[str] = None,
+    static_vars: List[str] = None,
     start_date: str = "2018-01-01",
     end_date: str = "2018-01-07",
     batch_size: int = 4,
@@ -84,6 +87,9 @@ def create_dataloader(
     """
     # Создаем датасет
     dataset = ERA5Dataset(
+        atmos_vars = atmos_vars,
+        surface_vars = surface_vars,
+        static_vars = static_vars,
         start_date=start_date,
         end_date=end_date,
         **kwargs

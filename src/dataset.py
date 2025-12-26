@@ -36,7 +36,6 @@ class ERA5Dataset(Dataset):
         static_vars: List[str] = None,
         start_date: str = "2018-01-01",
         end_date: str = "2018-01-07",
-        batch_size: int = 1,
     ):
         """
         Args:

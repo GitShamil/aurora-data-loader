@@ -161,21 +161,17 @@ class ERA5Dataset(Dataset):
                     self.data.ds_atmospheric[wb2_var].isel(time=time_idx).values
                 )  # [levels, H, W]
 
-                # Добавляем batch и time размерности: [1, 1, levels, H, W]
+                # В Aurora каждая атмосферная переменная содержит ВСЕ уровни
+                # Формат: [1, 1, levels, H, W] где levels = len(self.atmos_levels)
                 var_tensor = torch.from_numpy(var_data.astype(np.float32))
-                var_tensor = var_tensor.unsqueeze(0).unsqueeze(
-                    0
-                )  # [1, 1, levels, H, W]
+                
+                # Добавляем batch и time размерности: [1, 1, levels, H, W]
+                var_tensor = var_tensor.unsqueeze(0).unsqueeze(0)  # [1, 1, levels, H, W]
 
-                # Создаем отдельный тензор для каждого уровня
-                for level_idx, level in enumerate(self.atmos_levels):
-                    # Маппинг названия в формат Aurora
-                    aurora_var_name = self.variable_mapper.map_atmospheric(
-                        wb2_var, level
-                    )
-                    # Берем срез по уровню: [1, 1, 1, H, W]
-                    level_tensor = var_tensor[:, :, level_idx : level_idx + 1, :, :]
-                    atmos_tensors[aurora_var_name] = level_tensor
+                # Маппинг названия в формат Aurora (без указания уровня!)
+                # В Aurora название переменной не включает уровень
+                aurora_var_name = self.variable_mapper.map_atmospheric(wb2_var, level=None)
+                atmos_tensors[aurora_var_name] = var_tensor
 
         # Статические переменные
         static_tensors = {}

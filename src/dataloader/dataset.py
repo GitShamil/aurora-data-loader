@@ -211,6 +211,9 @@ class ERA5Dataset(Dataset):
 
         # Время для этого батча
         time = self.times[time_idx]
+        dt_str = np.datetime_as_string(time, unit='s')  # '2021-05-03T06:00:00'
+        dt_str = dt_str.replace('T', ' ')
+        time = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
 
         # Создаем Metadata
         metadata = Metadata(

@@ -152,8 +152,7 @@ class Batch:
                     lat=self.metadata.lat[:-1],
                     lon=self.metadata.lon,
                     atmos_levels=self.metadata.atmos_levels,
-                    time=self.metadata.time,
-                    rollout_step=self.metadata.rollout_step,
+                    time=self.metadata.time
                 ),
             )
         else:
@@ -171,8 +170,7 @@ class Batch:
                 lat=f(self.metadata.lat),
                 lon=f(self.metadata.lon),
                 atmos_levels=self.metadata.atmos_levels,
-                time=self.metadata.time,
-                rollout_step=self.metadata.rollout_step,
+                time=self.metadata.time
             ),
         )
 
@@ -211,8 +209,7 @@ class Batch:
                 lat=lat_new,
                 lon=lon_new,
                 atmos_levels=self.metadata.atmos_levels,
-                time=self.metadata.time,
-                rollout_step=self.metadata.rollout_step,
+                time=self.metadata.time
             ),
         )
 
@@ -281,8 +278,7 @@ class Batch:
                 lat=torch.from_numpy(ds.latitude.values),
                 lon=torch.from_numpy(ds.longitude.values),
                 time=tuple(ds.time.values.astype("datetime64[s]").tolist()),
-                atmos_levels=tuple(ds.level.values),
-                rollout_step=int(ds.rollout_step.values),
+                atmos_levels=tuple(ds.level.values)
             ),
         )
 

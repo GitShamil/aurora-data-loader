@@ -135,13 +135,16 @@ class AuroraAE(torch.nn.Module):
             head_dim=embed_dim // num_heads,
             depth=enc_depth,
             latent_levels=latent_levels,
-            max_history_size=max_history_size,
             perceiver_ln_eps=perceiver_ln_eps,
             stabilise_level_agg=stabilise_level_agg,
             level_condition=level_condition,
             dynamic_vars=dynamic_vars,
             atmos_static_vars=atmos_static_vars,
-            simulate_indexing_bug=simulate_indexing_bug,
+        )
+
+        self.latent_projection = nn.Sequential(
+            nn.Linear(embed_dim, embed_dim * 2),
+            nn.LayerNorm(embed_dim * 2, eps=perceiver_ln_eps)
         )
 
         self.decoder = Perceiver3DDecoder(
@@ -159,7 +162,7 @@ class AuroraAE(torch.nn.Module):
             perceiver_ln_eps=perceiver_ln_eps,
             level_condition=level_condition,
             separate_perceiver=separate_perceiver,
-            modulation_heads=modulation_heads,
+#            modulation_heads=modulation_heads,
         )
 
     def forward(self, batch: Batch) -> Batch:
@@ -204,6 +207,8 @@ class AuroraAE(torch.nn.Module):
         x = self.encoder(
             transformed_batch,
         )
+
+        x = self.latent_projection(x)
 
         pred = self.decoder(
             x,
